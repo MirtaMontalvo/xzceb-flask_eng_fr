@@ -25,7 +25,7 @@ LANGUAGE_TRANSLATOR = LanguageTranslatorV3(
 # Set the service URL
 LANGUAGE_TRANSLATOR.set_service_url(URL)
 
-def english_to_french(english_text):
+def englishToFrench(english_text):
     """
     Translates English text to French.
     """
@@ -33,12 +33,14 @@ def english_to_french(english_text):
         return ''  # Return empty string
     translation_response = LANGUAGE_TRANSLATOR.translate(
         text=english_text,
-        model_id='en-fr').get_result()
+        source='en',
+        target='fr'
+    ).get_result()
     french_text = translation_response['translations'][0]['translation']
     print(json.dumps(translation_response, indent=2, ensure_ascii=False))
     return french_text
 
-def french_to_english(french_text):
+def frenchToEnglish(french_text):
     """
     Translates French text to English.
     """
@@ -46,7 +48,9 @@ def french_to_english(french_text):
         return ''  # Return empty string
     translation_response = LANGUAGE_TRANSLATOR.translate(
         text=french_text,
-        model_id='fr-en').get_result()
+        source='fr',
+        target='en'
+    ).get_result()
     english_text = translation_response['translations'][0]['translation']
     print(json.dumps(translation_response, indent=2, ensure_ascii=False))
     return english_text
