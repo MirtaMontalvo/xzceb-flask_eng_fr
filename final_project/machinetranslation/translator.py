@@ -3,54 +3,60 @@ Translator Module
 """
 
 import os
-import json
 from dotenv import load_dotenv
 from ibm_watson import LanguageTranslatorV3
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 load_dotenv()
 
-API_KEY = os.environ['apikey']
-URL = os.environ['url']
+apikey = os.environ['apikey']
+url = os.environ['url']
 
 # Create an authenticator instance with the API key
-AUTHENTICATOR = IAMAuthenticator(API_KEY)
+AUTHENTICATOR = IAMAuthenticator(apikey)
 
 # Create a language translator instance with the URL and authenticator
 LANGUAGE_TRANSLATOR = LanguageTranslatorV3(
     version='2018-05-01',
     authenticator=AUTHENTICATOR
 )
+LANGUAGE_TRANSLATOR.set_service_url(url)
 
-# Set the service URL
-LANGUAGE_TRANSLATOR.set_service_url(URL)
-
-def englishToFrench(english_text):
+def english_to_french(text): # Function to Translate Input from English to French
     """
     Translates English text to French.
-    """
-    if not english_text:  # Check if english_text is empty
-        return ''  # Return empty string
-    translation_response = LANGUAGE_TRANSLATOR.translate(
-        text=english_text,
-        source='en',
-        target='fr'
-    ).get_result()
-    french_text = translation_response['translations'][0]['translation']
-    print(json.dumps(translation_response, indent=2, ensure_ascii=False))
-    return french_text
 
-def frenchToEnglish(french_text):
+    Args:
+        text (str): The input text in English.
+
+    Returns:
+        str or None: The translated text in French, or None if the input is empty or None.
+    """
+    if text:
+        translation = LANGUAGE_TRANSLATOR.translate(
+            text=text,
+            model_id='en-fr').get_result()
+        translated_text = translation['translations'][0]['translation']
+    else:
+        translated_text = None
+    return translated_text
+
+def french_to_english(text):  # Function to Translate Input from French to English
     """
     Translates French text to English.
+
+    Args:
+        text (str): The input text in French.
+
+    Returns:
+        str or None: The translated text in English, or None if the input is empty or None.
     """
-    if not french_text:  # Check if french_text is empty
-        return ''  # Return empty string
-    translation_response = LANGUAGE_TRANSLATOR.translate(
-        text=french_text,
-        source='fr',
-        target='en'
-    ).get_result()
-    english_text = translation_response['translations'][0]['translation']
-    print(json.dumps(translation_response, indent=2, ensure_ascii=False))
-    return english_text
+    if text:
+        translation = LANGUAGE_TRANSLATOR.translate(
+            text=text,
+            model_id='fr-en').get_result()
+        translated_text = translation['translations'][0]['translation']
+    else:
+        translated_text = None
+    return translated_text
+    
